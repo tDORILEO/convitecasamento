@@ -1,196 +1,417 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Convite de Casamento | Tauan & Ingridy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celebramos o Amor | Tauan & Ingridy</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Tangerine:wght@700&display=swap" rel="stylesheet">
 
- <link rel="preconnect" href="https://fonts.googleapis.com">
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --marsala: #800000;
+            --ivory: #fefcf9;
+            --charcoal: #3e3e3e;
+            --stone: #8a8a8a;
+            --light-bg: #f9f6f3;
+            --white: #ffffff;
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
- <style>
- :root {
- --marsala: #800000;
- --background: #fdf8f5;
- --text-light: #6d6d6d;
- --text-dark: #3a3a3a;
- --white: #ffffff;
- --light-pink-bg: #fbe9ed;
- }
+        html { scroll-behavior: smooth; }
 
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: #e9e9e9;
+            color: var(--charcoal);
+            overflow: hidden;
+        }
 
- * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: var(--ivory);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 200;
+            transition: opacity 0.8s ease;
+        }
+        #preloader.hidden { opacity: 0; pointer-events: none; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(128, 0, 0, 0.2);
+            border-top-color: var(--marsala);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* --- CAPA INICIAL --- */
+        #cover-page {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            background: url('entrada.jpeg') no-repeat center center/cover;
+            color: var(--white);
+            z-index: 100;
+            transition: opacity 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+            opacity: 0;
+        }
+        #cover-page.visible { opacity: 1; }
+        #cover-page.hidden { opacity: 0; pointer-events: none; }
+        #cover-page::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
+        }
+        #cover-page .content { position: relative; z-index: 1; }
+        .cover-names {
+            font-family: 'Tangerine', cursive;
+            font-size: 7rem;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+            text-shadow: 1px 1px 15px rgba(0,0,0,0.5);
+            animation: fadeIn 2s 0.5s cubic-bezier(0.77, 0, 0.175, 1) both;
+        }
+        .btn-open {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: transparent;
+            color: var(--white);
+            border: 1px solid var(--white);
+            padding: 14px 40px; margin-top: 30px;
+            font-size: 1rem; font-weight: 600;
+            letter-spacing: 2px; cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.4s, color 0.4s;
+            animation: fadeInUp 1.5s 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+        .btn-open:hover { background-color: var(--marsala); border-color: var(--marsala); color: var(--white); }
 
- body {
- font-family: 'Montserrat', sans-serif;
- background-color: #e9e9e9;
- overflow: hidden;
- }
+        /* --- CONVITE PRINCIPAL --- */
+        #main-invitation {
+            height: 100vh; width: 100vw; padding: 20px;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+        #main-invitation.visible { opacity: 1; }
+        .convite-container {
+            max-width: 480px; width: 100%;
+            background-color: var(--ivory);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            display: flex; flex-direction: column;
+            max-height: 95vh;
+            border-radius: 6px;
+        }
+        .image-wrapper {
+            width: 100%; height: 300px;
+            border-radius: 6px 6px 0 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .image-wrapper img {
+            width: 100%; height: 115%;
+            object-fit: cover; object-position: center;
+            border-radius: 6px 6px 0 0;
+            position: absolute; top: 0; left: 0;
+        }
+        .content-wrapper {
+            padding: 20px 40px 40px 40px;
+            text-align: center;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .content-wrapper::-webkit-scrollbar { width: 6px; }
+        .content-wrapper::-webkit-scrollbar-track { background: var(--light-bg); }
+        .content-wrapper::-webkit-scrollbar-thumb { background: var(--marsala); border-radius: 3px; }
+        .names {
+            font-family: 'Tangerine', cursive;
+            font-size: 5rem;
+            color: var(--marsala);
+            line-height: 1;
+            margin: 20px 0 25px 0;
+            font-weight: 700;
+        }
+        .invite-text {
+            font-size: 1.1rem; line-height: 1.7;
+            color: var(--stone);
+            margin-bottom: 30px;
+            max-width: 350px;
+            margin-left: auto; margin-right: auto;
+        }
+        #countdown { margin-bottom: 35px; display: flex; justify-content: center; gap: 20px; }
+        .time-block { text-align: center; }
+        .time-value {
+            font-size: 2.5rem; font-weight: 600;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--marsala); line-height: 1;
+        }
+        .time-label { font-size: 0.8rem; color: var(--stone); text-transform: uppercase; letter-spacing: 1.5px; }
+        
+        .section-title {
+            font-size: 1.1rem; font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--charcoal);
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .section-title::after {
+            content: ''; display: block;
+            width: 40px; height: 1px;
+            background: var(--marsala);
+            margin: 10px auto 0;
+        }
+        .icons-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 40px; max-width: 320px; margin-left: auto; margin-right: auto; }
+        .icon-item { text-decoration: none; color: var(--charcoal); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .icon-item:hover { color: var(--marsala); }
+        .icon-circle {
+            width: 70px; height: 70px;
+            border: 1px solid #e0e0e0;
+            border-radius: 50%; display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 12px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .icon-item:hover .icon-circle { border-color: var(--marsala); transform: translateY(-3px); }
+        .icon-circle svg { width: 28px; height: 28px; stroke: var(--marsala); }
+        
+        .quote {
+            font-size: 1.1rem; color: var(--stone);
+            font-style: italic; padding: 30px 0;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
 
+        /* --- BOTÃO DE MÚSICA --- */
+        #music-toggle {
+            position: fixed; bottom: 25px; right: 25px;
+            background-color: var(--ivory);
+            border: 1px solid #e0e0e0;
+            border-radius: 50%; width: 45px; height: 45px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            z-index: 101; opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.5s, transform 0.5s, box-shadow 0.3s;
+        }
+        #music-toggle.visible { opacity: 1; transform: scale(1); }
+        #music-toggle:hover { border-color: var(--marsala); }
+        #music-toggle svg { width: 18px; height: 18px; fill: var(--marsala); }
 
- /* --- ESTILOS DA CAPA INICIAL --- */
- #cover-page {
- position: relative; /* Necessário para o posicionamento do fundo */
- overflow: hidden; /* Garante que o blur não vaze para fora */
- position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
- display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
- color: var(--white);
- transition: opacity 1.2s ease-out;
- z-index: 100;
- }
+        /* --- MODAL "NOSSA HISTÓRIA" --- */
+        #story-modal {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(62, 62, 62, 0.8);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            padding: 20px; z-index: 150;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        #story-modal.visible { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: var(--ivory); padding: 40px;
+            border-radius: 6px; max-width: 500px;
+            width: 100%; max-height: 80vh;
+            overflow-y: auto; position: relative;
+            transform: scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #story-modal.visible .modal-content { transform: scale(1); }
+        .modal-content h3 {
+            font-family: 'Tangerine', cursive;
+            font-size: 3rem;
+            color: var(--marsala);
+            margin-bottom: 20px;
+        }
+        .modal-content p { font-size: 1.1rem; line-height: 1.8; color: var(--stone); }
+        .close-modal {
+            position: absolute; top: 15px; right: 15px;
+            background: transparent; border: none;
+            font-size: 2rem; color: #ccc;
+            cursor: pointer; transition: color 0.3s;
+        }
+        .close-modal:hover { color: var(--marsala); }
 
+        /* Animações Genéricas */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
- /* --- AJUSTE PARA EMBASSAR A IMAGEM DE FUNDO --- */
- #cover-page::before {
- content: '';
- position: absolute;
- top: -10px; /* Adicionado para compensar as bordas do blur */
- left: -10px; /* Adicionado para compensar as bordas do blur */
- width: calc(100% + 20px);
- height: calc(100% + 20px);
- background: url('entrada.jpeg') no-repeat center center/cover;
- box-shadow: inset 0 0 0 2000px rgba(80, 20, 20, 0.35);
- /* Aplica o efeito de desfoque. Ajuste o valor em 'px' para mais ou menos desfoque */
- filter: blur(4px);
- z-index: -1; /* Coloca o fundo atrás do conteúdo */
- }
-
-
- #cover-page.hidden { opacity: 0; pointer-events: none; }
- #cover-page .cover-names {
- font-family: 'Great Vibes', cursive; font-size: 5rem; line-height: 1.1;
- text-shadow: 2px 2px 12px rgba(0,0,0,0.5);
- animation: fadeInDown 1.2s ease-out both;
- }
- #cover-page .cover-names span { font-size: 2rem; }
- #cover-page .btn-open {
- font-family: 'Montserrat', sans-serif; background-color: transparent; color: var(--white);
- border: 1px solid var(--white); padding: 12px 30px; border-radius: 50px; margin-top: 35px;
- font-size: 0.9rem; font-weight: 400; letter-spacing: 1.5px; cursor: pointer; text-transform: uppercase;
- animation: fadeInUp 1.2s 0.6s ease-out both;
- transition: background-color 0.4s, transform 0.4s;
- }
- #cover-page .btn-open:hover { background-color: rgba(255, 255, 255, 0.15); transform: scale(1.05); }
- @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
- @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-
-
- /* --- ESTILOS DO CONVITE PRINCIPAL --- */
- #main-invitation {
- height: 100vh; width: 100vw; padding: 20px;
- display: flex; justify-content: center; align-items: center;
- }
-
- .convite-container {
- max-width: 450px; width: 100%; margin: 0 auto; background-color: var(--background);
- box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); text-align: center;
- display: flex; flex-direction: column; max-height: 95vh;
- border-radius: 8px;
- }
- .image-wrapper {
- width: 100%; max-height: 45%; flex-shrink: 0;
- border-radius: 8px 8px 0 0;
- -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
- mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
- overflow: hidden; /* Garante que a imagem não vaze do container */
- }
- .image-wrapper img {
- width: 100%; height: auto; /* A altura se ajustará proporcionalmente */
- object-fit: cover; object-position: center 20%;
- border-radius: 8px 8px 0 0;
- max-height: 400px; /* Defina a altura máxima desejada para a imagem */
- }
-
-
- .content-wrapper {
- padding: 0 30px 30px 30px;
- margin-top: -30px;
- flex-grow: 1;
- overflow-y: auto;
- scrollbar-width: none; /* Para Firefox */
- }
- .content-wrapper::-webkit-scrollbar {
- display: none;
- }
-
-
- .names { font-family: 'Great Vibes', cursive; font-size: 3.8rem; color: var(--marsala); line-height: 1; margin: 0 0 20px 0; }
- .names span { font-size: 1.5rem; font-style: normal; margin: 0 5px; }
- .invite-text { color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; }
- .date-info { color: var(--text-dark); font-weight: 700; font-size: 1.2rem; margin-bottom: 10px; }
- .time-info { color: var(--text-light); font-size: 1rem; margin-bottom: 30px; }
- .icon-section h3 { color: var(--text-light); font-size: 0.9rem; font-weight: 400; margin-bottom: 20px; }
- .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
- .icon-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-light); font-size: 0.7rem; }
- .icon-circle { width: 60px; height: 60px; background-color: var(--light-pink-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
- .icon-circle svg { width: 28px; height: 28px; fill: var(--marsala); }
- .icon-item:hover .icon-circle { transform: scale(1.1); box-shadow: 0 4px 15px rgba(128, 0, 0, 0.2); }
- .quote { font-size: 0.85rem; color: var(--text-light); font-style: italic; padding: 20px; border-top: 1px solid #eee; margin-top: 20px; }
-
-
- @media (max-width: 600px) {
- #cover-page .cover-names { font-size: 4rem; }
- .image-wrapper { max-height: 40%; }
- .content-wrapper { padding: 0 20px 20px 20px; }
- .names { font-size: 3.2rem; }
- .icons-grid { grid-template-columns: repeat(2, 1fr); gap: 25px; }
- .icon-circle { width: 65px; height: 65px; }
- .icon-item { font-size: 0.75rem; }
- .image-wrapper img { max-height: 150px; } /* Ajuste o tamanho em telas menores também, se necessário */
- }
- </style>
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .cover-names { font-size: 5rem; }
+            .content-wrapper { padding: 10px 25px 30px; }
+            .names { font-size: 4rem; }
+            #countdown { gap: 15px; }
+            .time-value { font-size: 2rem; }
+            .icons-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        }
+    </style>
 </head>
 <body>
 
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
 
- <div id="cover-page">
- <div class="cover-names">Tauan <span>&</span> Ingridy</div>
- <span>Convite de casamento</span>
- <button class="btn-open">ABRIR CONVITE</button>
- </div>
+    <div id="cover-page">
+        <div class="content">
+            <h1 class="cover-names">Tauan & Ingridy</h1>
+            <button class="btn-open">Descobrir</button>
+        </div>
+    </div>
 
- <div id="main-invitation" style="display: none;">
- <div class="convite-container">
- <div class="image-wrapper">
- <img src="casal.jpg" alt="Foto do casal Tauan e Ingridy">
- </div>
- <div class="content-wrapper">
- <h1 class="names">Tauan <span>e</span> Ingridy</h1>
- <p class="invite-text">"O amor é sofredor, é benigno; o amor não é invejoso; o amor não trata com leviandade, não se ensoberbece. Tudo sofre, tudo crê, tudo espera, tudo suporta." (1 Coríntios 13:4-7)</p>
- <p class="date-info">26 de Setembro de 2026</p>
- <p class="time-info">Sábado às 16 horas</p>
- <div class="icon-section">
- <div class="icons-grid">
- <a href="nossa-historia.html" target="_blank" class="icon-item"><div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" /></svg></div><span>NOSSA HISTÓRIA</span></a>
- <a href="#" class="icon-item"><div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M20 12V22H4V12H20M20 7H4C2.9 7 2 7.9 2 9V12H22V9C22 7.9 21.1 7 20 7M12 3L13.5 4.5L12 6L10.5 4.5L12 3M7 7H9V5L7 7M17 7H15V5L17 7Z" /></svg></div><span>LISTA DE PRESENTES</span></a>
- <a href="https://maps.app.goo.gl/CQWBL5rFkUDrpWcr7" class="icon-item"><div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" /></svg></div><span>CERIMÔNIA</span></a>
- <a href="https://calendar.app.google/dtDMsBUC8SWf6MLE7" class="icon-item"><div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" /></svg></div><span>CONFIRME SUA PRESENÇA</span></a>
- </div>
- </div>
- </div>
- </div>
- </div>
+    <main id="main-invitation">
+        <div class="convite-container">
+            <div class="image-wrapper">
+                <img src="casal.jpg" alt="Foto do casal Tauan e Ingridy" id="parallax-image">
+            </div>
+            <div class="content-wrapper" id="scroll-container">
+                <h2 class="names">Tauan & Ingridy</h2>
+                <p class="invite-text">Com a bênção de Deus, temos a alegria de convidá-lo para celebrar o capítulo mais esperado de nossa história: nosso casamento.</p>
+                
+                <div id="countdown"></div>
+                <h3 class="section-title">26 de Setembro de 2026<br>Sábado, às 16 horas</h3>
 
+                <div class="icons-grid">
+                     <a href="https://tdorileo.github.io/NOssaHISTORIA/" class="icon-item" aria-label="nossa história">
+                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+                        <span>Nossa História</span>
+                    </a>
+                    <a href="URL_PARA_SUA_LISTA_DE_PRESENTES" target="_blank" class="icon-item" aria-label="Veja nossa lista de presentes">
+                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z"></path><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></div>
+                        <span>Presentes</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/9UhSeaeHg6anA5vA6" target="_blank" class="icon-item" aria-label="Veja a localização da cerimônia">
+                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                        <span>Localização</span>
+                    </a>
+                    <a href="https://calendar.app.google/dtDMsBUC8SWf6MLE7" target="_blank" class="icon-item" aria-label="Confirme sua presença">
+                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg></div>
+                        <span>Confirmar Presença</span>
+                    </a>
+                </div>
+
+                <p class="quote">"Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."<br>(Mateus 19:6)</p>
+            </div>
+        </div>
+    </main>
+    
+    </div>
+
+    <audio id="background-music" src="sua-musica.mp3" loop></audio>
+    <button id="music-toggle" aria-label="Tocar música">
+        <svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+        <svg id="pause-icon" viewBox="0 0 24 24" style="display: none;"><path d="M14,19H18V5H14M6,19H10V5H6V19Z"/></svg>
+    </button>
 
 <script>
- // Seletores dos elementos da página
- const openButton = document.querySelector('.btn-open');
- const coverPage = document.getElementById('cover-page');
- const mainInvitation = document.getElementById('main-invitation');
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Seletores ---
+    const preloader = document.getElementById('preloader');
+    const coverPage = document.getElementById('cover-page');
+    const openButton = document.querySelector('.btn-open');
+    const mainInvitation = document.getElementById('main-invitation');
+    const musicToggle = document.getElementById('music-toggle');
+    const audio = document.getElementById('background-music');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const storyModal = document.getElementById('story-modal');
+    const openStoryBtn = document.getElementById('open-story');
+    const closeStoryBtn = document.getElementById('close-story');
+    const parallaxImage = document.getElementById('parallax-image');
+    const scrollContainer = document.getElementById('scroll-container');
 
+    // --- Lógica do Preloader ---
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            preloader.classList.add('hidden');
+            setTimeout(() => {
+                coverPage.classList.add('visible');
+            }, 50);
+        }, 500);
+    });
 
- // --- LÓGICA DO CONVITE PRINCIPAL ---
- openButton.addEventListener('click', () => {
- coverPage.classList.add('hidden');
- mainInvitation.style.display = 'flex';
- setTimeout(() => { coverPage.style.display = 'none'; }, 1200);
- });
+    // --- Lógica para Abrir Convite ---
+    openButton.addEventListener('click', () => {
+        coverPage.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        
+        setTimeout(() => {
+            coverPage.style.display = 'none';
+            mainInvitation.style.display = 'flex';
+            setTimeout(() => mainInvitation.classList.add('visible'), 50);
+            musicToggle.classList.add('visible');
+        }, 1500);
+
+        audio.play().catch(() => {});
+        updateMusicIcons(false);
+    });
+    
+    // --- Lógica do Parallax ---
+    scrollContainer.addEventListener('scroll', () => {
+        const scrollTop = scrollContainer.scrollTop;
+        parallaxImage.style.transform = `translateY(${scrollTop * 0.2}px)`;
+    });
+
+    // --- Lógica do Contador ---
+    const countdownElement = document.getElementById('countdown');
+    const weddingDate = new Date('2026-09-26T16:00:00').getTime();
+    
+    const updateCountdown = () => {
+        const now = new Date().getTime();
+        const distance = weddingDate - now;
+
+        if (distance < 0) {
+            countdownElement.innerHTML = "<h3 class='section-title' style='margin-bottom:0;'>O Grande Dia Chegou!</h3>";
+            clearInterval(countdownInterval);
+            return;
+        }
+
+        const f = (n) => n.toString().padStart(2, '0');
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = f(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        const minutes = f(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+        const seconds = f(Math.floor((distance % (1000 * 60)) / 1000));
+
+        countdownElement.innerHTML = `
+            <div class="time-block"><div class="time-value">${days}</div><div class="time-label">Dias</div></div>
+            <div class="time-block"><div class="time-value">${hours}</div><div class="time-label">Horas</div></div>
+            <div class="time-block"><div class="time-value">${minutes}</div><div class="time-label">Min</div></div>
+            <div class="time-block"><div class="time-value">${seconds}</div><div class="time-label">Seg</div></div>
+        `;
+    };
+    const countdownInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // --- Lógica do Modal "Nossa História" ---
+    openStoryBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        storyModal.classList.add('visible');
+    });
+    closeStoryBtn.addEventListener('click', () => storyModal.classList.remove('visible'));
+    storyModal.addEventListener('click', (e) => {
+        if (e.target === storyModal) storyModal.classList.remove('visible');
+    });
+
+    // --- Lógica do Controle de Música ---
+    const updateMusicIcons = (isPaused) => {
+        playIcon.style.display = isPaused ? 'block' : 'none';
+        pauseIcon.style.display = isPaused ? 'none' : 'block';
+    };
+    musicToggle.addEventListener('click', () => {
+        const isPaused = audio.paused;
+        isPaused ? audio.play() : audio.pause();
+        updateMusicIcons(!isPaused);
+    });
+});
 </script>
-
 
 </body>
 </html>
