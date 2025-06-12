@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tauan & Ingridy//Casamento//PT
+BEGIN:VEVENT
+UID:casamento-tauan-ingridy-20260926
+SUMMARY:Casamento Tauan & Ingridy
+DTSTAMP:20250613T000000Z
+DTSTART:20260926T200000Z
+DTEND:20260926T230000Z
+LOCATION:Nome e Endereço do Local da Cerimônia, Cuiabá, MT
+DESCRIPTION:Celebração do casamento de Tauan e Ingridy. Traje: Passeio Completo. Mal podemos esperar para celebrar com você!
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+TRIGGER:-PT1W
+ACTION:DISPLAY
+DESCRIPTION:Lembrete: O casamento de Tauan & Ingridy é em uma semana!
+END:VALARM
+END:VEVENT
+END:VCALENDAR
