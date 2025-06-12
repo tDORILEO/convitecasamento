@@ -12,17 +12,17 @@
     <style>
         :root {
             --marsala: #800000;
+            --marsala-dark: #660000;
             --ivory: #fefcf9;
             --charcoal: #3e3e3e;
             --stone: #8a8a8a;
             --light-bg: #f9f6f3;
             --white: #ffffff;
+            --delay-base: 200ms;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html { scroll-behavior: smooth; }
-
         body {
             font-family: 'Cormorant Garamond', serif;
             background-color: #e9e9e9;
@@ -30,235 +30,199 @@
             overflow: hidden;
         }
 
+        /* --- ANIMAÇÕES EM CASCATA --- */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #main-invitation.visible .reveal-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-item:nth-child(1) { transition-delay: calc(var(--delay-base) * 1); }
+        .reveal-item:nth-child(2) { transition-delay: calc(var(--delay-base) * 2); }
+        .reveal-item:nth-child(3) { transition-delay: calc(var(--delay-base) * 3); }
+        .reveal-item:nth-child(4) { transition-delay: calc(var(--delay-base) * 4); }
+
         /* --- PRELOADER --- */
         #preloader {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background-color: var(--ivory);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 200;
-            transition: opacity 0.8s ease;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--ivory); display: flex; justify-content: center; align-items: center;
+            z-index: 200; transition: opacity 0.8s ease;
         }
         #preloader.hidden { opacity: 0; pointer-events: none; }
         .spinner {
-            width: 50px; height: 50px;
-            border: 3px solid rgba(128, 0, 0, 0.2);
-            border-top-color: var(--marsala);
-            border-radius: 50%;
+            width: 50px; height: 50px; border: 3px solid rgba(128, 0, 0, 0.2);
+            border-top-color: var(--marsala); border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
+        
         /* --- CAPA INICIAL --- */
         #cover-page {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
             background: url('entrada.jpeg') no-repeat center center/cover;
-            color: var(--white);
-            z-index: 100;
-            transition: opacity 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+            color: var(--white); z-index: 100; transition: opacity 1.5s cubic-bezier(0.77, 0, 0.175, 1);
             opacity: 0;
         }
         #cover-page.visible { opacity: 1; }
         #cover-page.hidden { opacity: 0; pointer-events: none; }
         #cover-page::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
         }
         #cover-page .content { position: relative; z-index: 1; }
         .cover-names {
-            font-family: 'Tangerine', cursive;
-            font-size: 7rem;
-            font-weight: 700;
-            color: var(--white);
-            line-height: 1;
-            text-shadow: 1px 1px 15px rgba(0,0,0,0.5);
-            animation: fadeIn 2s 0.5s cubic-bezier(0.77, 0, 0.175, 1) both;
+            font-family: 'Tangerine', cursive; font-size: 7rem; font-weight: 700; color: var(--white);
+            line-height: 1; text-shadow: 1px 1px 15px rgba(0,0,0,0.5);
         }
         .btn-open {
-            font-family: 'Cormorant Garamond', serif;
-            background-color: transparent;
-            color: var(--white);
-            border: 1px solid var(--white);
-            padding: 14px 40px; margin-top: 30px;
-            font-size: 1rem; font-weight: 600;
-            letter-spacing: 2px; cursor: pointer;
-            text-transform: uppercase;
-            transition: background-color 0.4s, color 0.4s;
-            animation: fadeInUp 1.5s 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+            font-family: 'Cormorant Garamond', serif; background-color: transparent; color: var(--white);
+            border: 1px solid var(--white); padding: 14px 40px; margin-top: 30px;
+            font-size: 1rem; font-weight: 600; letter-spacing: 2px; cursor: pointer;
+            text-transform: uppercase; transition: background-color 0.4s, border-color 0.4s, transform 0.2s;
         }
-        .btn-open:hover { background-color: var(--marsala); border-color: var(--marsala); color: var(--white); }
+        .btn-open:hover { background-color: var(--marsala); border-color: var(--marsala); }
+        .btn-open:active { transform: scale(0.97); }
 
         /* --- CONVITE PRINCIPAL --- */
         #main-invitation {
             height: 100vh; width: 100vw; padding: 20px;
             display: none; justify-content: center; align-items: center;
-            opacity: 0;
-            transition: opacity 1s ease-in;
+            opacity: 0; transition: opacity 1s ease-in;
         }
         #main-invitation.visible { opacity: 1; }
         .convite-container {
-            max-width: 480px; width: 100%;
-            background-color: var(--ivory);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
-            display: flex; flex-direction: column;
-            max-height: 95vh;
-            border-radius: 6px;
+            max-width: 480px; width: 100%; background-color: var(--ivory);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column;
+            max-height: 95vh; border-radius: 6px;
         }
         .image-wrapper {
-            width: 100%; height: 300px;
-            border-radius: 6px 6px 0 0;
-            overflow: hidden;
-            position: relative;
+            width: 100%; height: 300px; border-radius: 6px 6px 0 0;
+            overflow: hidden; position: relative; background-color: #333;
         }
-        .image-wrapper img {
-            width: 100%; height: 115%;
-            object-fit: cover; object-position: center;
-            border-radius: 6px 6px 0 0;
-            position: absolute; top: 0; left: 0;
+        #slideshow-container img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0;
+            transform: scale(1.15);
+            transition: opacity 1.5s ease-in-out, transform 8s ease-out;
+        }
+        #slideshow-container img.active {
+            opacity: 1;
+            transform: scale(1);
         }
         .content-wrapper {
-            padding: 20px 40px 40px 40px;
-            text-align: center;
-            flex-grow: 1;
-            overflow-y: auto;
+            padding: 20px 40px 40px 40px; text-align: center;
+            flex-grow: 1; overflow-y: auto;
         }
         .content-wrapper::-webkit-scrollbar { width: 6px; }
         .content-wrapper::-webkit-scrollbar-track { background: var(--light-bg); }
         .content-wrapper::-webkit-scrollbar-thumb { background: var(--marsala); border-radius: 3px; }
         .names {
-            font-family: 'Tangerine', cursive;
-            font-size: 5rem;
-            color: var(--marsala);
-            line-height: 1;
-            margin: 20px 0 25px 0;
-            font-weight: 700;
+            font-family: 'Tangerine', cursive; font-size: 5rem;
+            background: -webkit-linear-gradient(45deg, var(--marsala), var(--marsala-dark));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            line-height: 1; margin: 20px 0 25px 0; font-weight: 700;
         }
         .invite-text {
-            font-size: 1.1rem; line-height: 1.7;
-            color: var(--stone);
-            margin-bottom: 30px;
-            max-width: 350px;
-            margin-left: auto; margin-right: auto;
+            font-size: 1.1rem; line-height: 1.7; color: var(--stone);
+            margin-bottom: 30px; max-width: 350px; margin-left: auto; margin-right: auto;
         }
         #countdown { margin-bottom: 35px; display: flex; justify-content: center; gap: 20px; }
         .time-block { text-align: center; }
         .time-value {
-            font-size: 2.5rem; font-weight: 600;
-            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem; font-weight: 600; font-family: 'Cormorant Garamond', serif;
             color: var(--marsala); line-height: 1;
         }
         .time-label { font-size: 0.8rem; color: var(--stone); text-transform: uppercase; letter-spacing: 1.5px; }
         
         .section-title {
-            font-size: 1.1rem; font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--charcoal);
-            margin-bottom: 25px;
-            position: relative;
+            font-size: 1.1rem; font-weight: 600; letter-spacing: 2px;
+            color: var(--charcoal); margin-bottom: 25px; position: relative;
         }
         .section-title::after {
-            content: ''; display: block;
-            width: 40px; height: 1px;
-            background: var(--marsala);
-            margin: 10px auto 0;
+            content: ''; display: block; width: 40px; height: 1px;
+            background: var(--marsala); margin: 10px auto 0;
         }
         .icons-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 40px; max-width: 320px; margin-left: auto; margin-right: auto; }
-        .icon-item { text-decoration: none; color: var(--charcoal); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .icon-item {
+            background: none; border: none; padding: 0; cursor: pointer;
+            text-decoration: none; color: var(--charcoal); font-family: 'Cormorant Garamond', serif;
+            font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
+            transition: color 0.3s; display: block;
+        }
         .icon-item:hover { color: var(--marsala); }
+        .icon-item:active { transform: scale(0.97); }
         .icon-circle {
-            width: 70px; height: 70px;
-            border: 1px solid #e0e0e0;
-            border-radius: 50%; display: flex;
-            justify-content: center; align-items: center;
-            margin: 0 auto 12px;
-            transition: border-color 0.3s, transform 0.3s;
+            width: 70px; height: 70px; border: 1px solid #e0e0e0; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 12px; transition: border-color 0.3s, transform 0.3s;
         }
         .icon-item:hover .icon-circle { border-color: var(--marsala); transform: translateY(-3px); }
         .icon-circle svg { width: 28px; height: 28px; stroke: var(--marsala); }
         
         .quote {
-            font-size: 1.1rem; color: var(--stone);
-            font-style: italic; padding: 30px 0;
-            border-top: 1px solid #eee;
-            margin-top: 20px;
+            font-size: 1.1rem; color: var(--stone); font-style: italic;
+            padding: 30px 0; border-top: 1px solid #eee; margin-top: 20px;
         }
-
-        /* --- BOTÃO DE MÚSICA --- */
+        
+        #toast {
+            position: fixed; bottom: -100px; left: 50%;
+            transform: translateX(-50%); background-color: var(--charcoal);
+            color: var(--white); padding: 12px 25px; border-radius: 50px;
+            font-size: 0.9rem; z-index: 200;
+            transition: bottom 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #toast.show { bottom: 30px; }
+        
         #music-toggle {
             position: fixed; bottom: 25px; right: 25px;
-            background-color: var(--ivory);
-            border: 1px solid #e0e0e0;
+            background-color: var(--ivory); border: 1px solid #e0e0e0;
             border-radius: 50%; width: 45px; height: 45px;
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            z-index: 101; opacity: 0;
-            transform: scale(0.5);
+            z-index: 101; opacity: 0; transform: scale(0.5);
             transition: opacity 0.5s, transform 0.5s, box-shadow 0.3s;
         }
         #music-toggle.visible { opacity: 1; transform: scale(1); }
         #music-toggle:hover { border-color: var(--marsala); }
+        #music-toggle:active { transform: scale(0.9); }
         #music-toggle svg { width: 18px; height: 18px; fill: var(--marsala); }
-
-        /* --- MODAL "NOSSA HISTÓRIA" --- */
+        
         #story-modal {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(62, 62, 62, 0.8);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center;
-            padding: 20px; z-index: 150;
-            opacity: 0; pointer-events: none;
+            padding: 20px; z-index: 150; opacity: 0; pointer-events: none;
             transition: opacity 0.4s ease;
         }
         #story-modal.visible { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: var(--ivory); padding: 40px;
-            border-radius: 6px; max-width: 500px;
-            width: 100%; max-height: 80vh;
+            background: var(--ivory); padding: 40px; border-radius: 6px;
+            max-width: 500px; width: 100%; max-height: 80vh;
             overflow-y: auto; position: relative;
             transform: scale(0.95);
             transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
         #story-modal.visible .modal-content { transform: scale(1); }
         .modal-content h3 {
-            font-family: 'Tangerine', cursive;
-            font-size: 3rem;
-            color: var(--marsala);
-            margin-bottom: 20px;
+            font-family: 'Tangerine', cursive; font-size: 3rem;
+            color: var(--marsala); margin-bottom: 20px;
         }
         .modal-content p { font-size: 1.1rem; line-height: 1.8; color: var(--stone); }
         .close-modal {
             position: absolute; top: 15px; right: 15px;
-            background: transparent; border: none;
-            font-size: 2rem; color: #ccc;
-            cursor: pointer; transition: color 0.3s;
+            background: transparent; border: none; font-size: 2rem;
+            color: #ccc; cursor: pointer; transition: color 0.3s;
         }
         .close-modal:hover { color: var(--marsala); }
-
-        /* Animações Genéricas */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Responsividade */
-        @media (max-width: 600px) {
-            .cover-names { font-size: 5rem; }
-            .content-wrapper { padding: 10px 25px 30px; }
-            .names { font-size: 4rem; }
-            #countdown { gap: 15px; }
-            .time-value { font-size: 2rem; }
-            .icons-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        }
     </style>
 </head>
 <body>
-
-    <div id="preloader">
-        <div class="spinner"></div>
-    </div>
+    <div id="preloader"><div class="spinner"></div></div>
 
     <div id="cover-page">
         <div class="content">
@@ -269,147 +233,252 @@
 
     <main id="main-invitation">
         <div class="convite-container">
-            <div class="image-wrapper">
-                <img src="casal.jpg" alt="Foto do casal Tauan e Ingridy" id="parallax-image">
-            </div>
+            <header class="image-wrapper" id="slideshow-container">
+                </header>
             <div class="content-wrapper" id="scroll-container">
-                <h2 class="names">Tauan & Ingridy</h2>
-                <p class="invite-text">Com a bênção de Deus, temos a alegria de convidá-lo para celebrar o capítulo mais esperado de nossa história: nosso casamento.</p>
+                <section class="reveal-item">
+                    <h2 class="names">Tauan & Ingridy</h2>
+                    <p class="invite-text">Com a bênção de Deus e de nossos pais, temos a alegria de convidá-lo para celebrar o capítulo mais esperado de nossa história: nosso casamento.</p>
+                </section>
                 
-                <div id="countdown"></div>
-                <h3 class="section-title">26 de Setembro de 2026<br>Sábado, às 16 horas</h3>
+                <section class="reveal-item">
+                    <div id="countdown"></div>
+                    <h3 class="section-title">26 de Setembro de 2026<br>Sábado, às 16 horas</h3>
+                </section>
+                
+                <section class="reveal-item">
+                    <div class="icons-grid">
+                       <a href="https://tdorileo.github.io/NOssaHISTORIA/" id="story-button" class="icon-item" aria-label="Leia nossa história">
+    <div class="icon-circle">
+        <svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+    </div>
+    <span>Nossa História</span>
+</a>
+                        </button>
+                         <button id="pix-button" class="icon-item" aria-label="Copiar chave PIX para presentes">
+                            <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8.7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4.5"></path><path d="M16.5 10.5a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path><path d="M12 13.5h1.5"></path><path d="M12 10.5h1.5"></path><path d="M12 16.5h1.5"></path><path d="M15.5 13.5h5"></path><path d="M18.5 10.5h2"></path><path d="M18.5 16.5h2"></path></svg></div>
+                            <span>Presentes (PIX)</span>
+                        </button>
+                        <a href="//maps.app.goo.gl/9UhSeaeHg6anA5vA6" target="_blank" class="icon-item" aria-label="Adicionar ao calendário">
+                            <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"></path><path d="M12 16h.01"></path></svg></div>
+                            <span>Localização</span>
+                        </a>
+                        <a href="https://calendar.app.google/dtDMsBUC8SWf6MLE7" target="_blank" class="icon-item" aria-label="Confirme sua presença">
+                            <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg></div>
+                            <span>Confirmar Presença</span>
+                        </a>
+                    </div>
+                </section>
 
-                <div class="icons-grid">
-                     <a href="https://tdorileo.github.io/NOssaHISTORIA/" class="icon-item" aria-label="nossa história">
-                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
-                        <span>Nossa História</span>
-                    </a>
-                    <a href="URL_PARA_SUA_LISTA_DE_PRESENTES" target="_blank" class="icon-item" aria-label="Veja nossa lista de presentes">
-                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z"></path><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></div>
-                        <span>Presentes</span>
-                    </a>
-                    <a href="https://maps.app.goo.gl/9UhSeaeHg6anA5vA6" target="_blank" class="icon-item" aria-label="Veja a localização da cerimônia">
-                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-                        <span>Localização</span>
-                    </a>
-                    <a href="https://calendar.app.google/dtDMsBUC8SWf6MLE7" target="_blank" class="icon-item" aria-label="Confirme sua presença">
-                        <div class="icon-circle"><svg fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg></div>
-                        <span>Confirmar Presença</span>
-                    </a>
-                </div>
-
-                <p class="quote">"Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."<br>(Mateus 19:6)</p>
+                <footer class="reveal-item">
+                    <p class="quote">"Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."<br>(Mateus 19:6)</p>
+                </footer>
             </div>
         </div>
     </main>
     
+    <div id="story-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h3>Nossa História</h3>
+            <p>
+                Nossos caminhos se cruzaram de forma inesperada... Desde então, cada passo nos trouxe até aqui, ao momento em que decidimos unir nossas vidas para sempre. Mal podemos esperar para celebrar este sonho com vocês.
+            </p>
+        </div>
     </div>
-
+    
     <audio id="background-music" src="sua-musica.mp3" loop></audio>
-    <button id="music-toggle" aria-label="Tocar música">
+    <button id="music-toggle">
         <svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
         <svg id="pause-icon" viewBox="0 0 24 24" style="display: none;"><path d="M14,19H18V5H14M6,19H10V5H6V19Z"/></svg>
     </button>
-
+    
+    <div id="toast" role="alert" aria-live="assertive"></div>
+    
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Seletores ---
-    const preloader = document.getElementById('preloader');
-    const coverPage = document.getElementById('cover-page');
-    const openButton = document.querySelector('.btn-open');
-    const mainInvitation = document.getElementById('main-invitation');
-    const musicToggle = document.getElementById('music-toggle');
-    const audio = document.getElementById('background-music');
-    const playIcon = document.getElementById('play-icon');
-    const pauseIcon = document.getElementById('pause-icon');
-    const storyModal = document.getElementById('story-modal');
-    const openStoryBtn = document.getElementById('open-story');
-    const closeStoryBtn = document.getElementById('close-story');
-    const parallaxImage = document.getElementById('parallax-image');
-    const scrollContainer = document.getElementById('scroll-container');
+const WeddingInvitation = {
+    config: {
+        pixKey: "02790450188",
+        weddingDate: '2026-09-26T16:00:00',
+        imageSlides: [
+            "casal.jpg",
+            "casal2.jpg",
+            "casal3.jpg"
+        ],
+        slideshowInterval: 5000,
+    },
+    elements: {},
+    state: {
+        currentSlide: 0,
+        slideshowTimer: null,
+    },
+    
+    init() {
+        this.cacheDOMElements();
+        this.addEventListeners();
+        this.setupSlideshow();
+        this.runCountdown();
+    },
 
-    // --- Lógica do Preloader ---
-    window.addEventListener('load', () => {
+    cacheDOMElements() {
+        this.elements = {
+            preloader: document.getElementById('preloader'),
+            coverPage: document.getElementById('cover-page'),
+            openButton: document.querySelector('.btn-open'),
+            mainInvitation: document.getElementById('main-invitation'),
+            slideshowContainer: document.getElementById('slideshow-container'),
+            scrollContainer: document.getElementById('scroll-container'),
+            countdown: document.getElementById('countdown'),
+            musicToggle: document.getElementById('music-toggle'),
+            audio: document.getElementById('background-music'),
+            playIcon: document.getElementById('play-icon'),
+            pauseIcon: document.getElementById('pause-icon'),
+            storyModal: document.getElementById('story-modal'),
+            storyButton: document.getElementById('story-button'),
+            closeModalButton: document.querySelector('.close-modal'),
+            pixButton: document.getElementById('pix-button'),
+            toast: document.getElementById('toast'),
+        };
+    },
+
+    addEventListeners() {
+        window.addEventListener('load', () => this.handlePageLoad());
+        this.elements.openButton.addEventListener('click', () => this.openInvitation());
+        
+        // A linha abaixo, que controlava o efeito parallax, foi desativada.
+        // this.elements.scrollContainer.addEventListener('scroll', () => this.handleParallax());
+        
+        this.elements.musicToggle.addEventListener('click', () => this.toggleMusic());
+        this.elements.storyButton.addEventListener('click', () => this.toggleModal(true));
+        this.elements.closeModalButton.addEventListener('click', () => this.toggleModal(false));
+        this.elements.storyModal.addEventListener('click', (e) => {
+            if (e.target === this.elements.storyModal) this.toggleModal(false);
+        });
+        this.elements.pixButton.addEventListener('click', () => this.copyPixKey());
+    },
+
+    handlePageLoad() {
         setTimeout(() => {
-            preloader.classList.add('hidden');
+            this.elements.preloader.classList.add('hidden');
             setTimeout(() => {
-                coverPage.classList.add('visible');
+                this.elements.coverPage.classList.add('visible');
             }, 50);
         }, 500);
-    });
+    },
 
-    // --- Lógica para Abrir Convite ---
-    openButton.addEventListener('click', () => {
-        coverPage.classList.add('hidden');
+    openInvitation() {
+        this.elements.coverPage.classList.add('hidden');
         document.body.style.overflow = 'auto';
         
         setTimeout(() => {
-            coverPage.style.display = 'none';
-            mainInvitation.style.display = 'flex';
-            setTimeout(() => mainInvitation.classList.add('visible'), 50);
-            musicToggle.classList.add('visible');
+            this.elements.coverPage.style.display = 'none';
+            this.elements.mainInvitation.style.display = 'flex';
+            setTimeout(() => {
+                this.elements.mainInvitation.classList.add('visible');
+                this.elements.musicToggle.classList.add('visible');
+                this.startSlideshow();
+            }, 50);
         }, 1500);
 
-        audio.play().catch(() => {});
-        updateMusicIcons(false);
-    });
+        this.elements.audio.play().catch(() => {});
+        this.updateMusicIcons(false);
+    },
     
-    // --- Lógica do Parallax ---
-    scrollContainer.addEventListener('scroll', () => {
-        const scrollTop = scrollContainer.scrollTop;
-        parallaxImage.style.transform = `translateY(${scrollTop * 0.2}px)`;
-    });
+    setupSlideshow() {
+        this.elements.slideshowContainer.innerHTML = '';
+        this.config.imageSlides.forEach((src, index) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = `Foto do casal ${index + 1}`;
+            if (index === 0) {
+                img.classList.add('active');
+            }
+            this.elements.slideshowContainer.appendChild(img);
+        });
+    },
 
-    // --- Lógica do Contador ---
-    const countdownElement = document.getElementById('countdown');
-    const weddingDate = new Date('2026-09-26T16:00:00').getTime();
+    startSlideshow() {
+        if (this.state.slideshowTimer) clearInterval(this.state.slideshowTimer);
+        this.state.slideshowTimer = setInterval(() => {
+            const slides = this.elements.slideshowContainer.querySelectorAll('img');
+            if (slides.length <= 1) return;
+
+            slides[this.state.currentSlide].classList.remove('active');
+            this.state.currentSlide = (this.state.currentSlide + 1) % slides.length;
+            slides[this.state.currentSlide].classList.add('active');
+        }, this.config.slideshowInterval);
+    },
+
+    /* A função abaixo foi desativada para manter as imagens fixas.
+    handleParallax() {
+        const scrollTop = this.elements.scrollContainer.scrollTop;
+        this.elements.slideshowContainer.style.transform = `translateY(${scrollTop * 0.2}px)`;
+    },
+    */
+
+    toggleMusic() {
+        const isPaused = this.elements.audio.paused;
+        isPaused ? this.elements.audio.play() : this.elements.audio.pause();
+        this.updateMusicIcons(!isPaused);
+    },
+
+    updateMusicIcons(isPaused) {
+        this.elements.playIcon.style.display = isPaused ? 'block' : 'none';
+        this.elements.pauseIcon.style.display = isPaused ? 'none' : 'block';
+    },
+
+    toggleModal(show) {
+        this.elements.storyModal.classList.toggle('visible', show);
+    },
     
-    const updateCountdown = () => {
-        const now = new Date().getTime();
-        const distance = weddingDate - now;
+    copyPixKey() {
+        navigator.clipboard.writeText(this.config.pixKey).then(() => {
+            this.showToast("Chave PIX copiada!");
+        }).catch(() => {
+            this.showToast("Erro ao copiar.");
+        });
+    },
 
-        if (distance < 0) {
-            countdownElement.innerHTML = "<h3 class='section-title' style='margin-bottom:0;'>O Grande Dia Chegou!</h3>";
-            clearInterval(countdownInterval);
-            return;
-        }
+    showToast(message) {
+        this.elements.toast.textContent = message;
+        this.elements.toast.classList.add('show');
+        setTimeout(() => {
+            this.elements.toast.classList.remove('show');
+        }, 3000);
+    },
+    
+    runCountdown() {
+        const weddingTime = new Date(this.config.weddingDate).getTime();
+        const interval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = weddingTime - now;
 
-        const f = (n) => n.toString().padStart(2, '0');
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = f(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-        const minutes = f(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-        const seconds = f(Math.floor((distance % (1000 * 60)) / 1000));
+            if (distance < 0) {
+                this.elements.countdown.innerHTML = "<h3 class='section-title' style='margin-bottom:0;'>O Grande Dia Chegou!</h3>";
+                clearInterval(interval);
+                return;
+            }
 
-        countdownElement.innerHTML = `
-            <div class="time-block"><div class="time-value">${days}</div><div class="time-label">Dias</div></div>
-            <div class="time-block"><div class="time-value">${hours}</div><div class="time-label">Horas</div></div>
-            <div class="time-block"><div class="time-value">${minutes}</div><div class="time-label">Min</div></div>
-            <div class="time-block"><div class="time-value">${seconds}</div><div class="time-label">Seg</div></div>
-        `;
-    };
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    updateCountdown();
+            const f = (n) => String(n).padStart(2, '0');
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = f(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+            const minutes = f(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+            const seconds = f(Math.floor((distance % (1000 * 60)) / 1000));
 
-    // --- Lógica do Modal "Nossa História" ---
-    openStoryBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        storyModal.classList.add('visible');
-    });
-    closeStoryBtn.addEventListener('click', () => storyModal.classList.remove('visible'));
-    storyModal.addEventListener('click', (e) => {
-        if (e.target === storyModal) storyModal.classList.remove('visible');
-    });
+            this.elements.countdown.innerHTML = `
+                <div class="time-block"><div class="time-value">${days}</div><div class="time-label">Dias</div></div>
+                <div class="time-block"><div class="time-value">${hours}</div><div class="time-label">Horas</div></div>
+                <div class="time-block"><div class="time-value">${minutes}</div><div class="time-label">Min</div></div>
+                <div class="time-block"><div class="time-value">${seconds}</div><div class="time-label">Seg</div></div>
+            `;
+        }, 1000);
+    }
+};
 
-    // --- Lógica do Controle de Música ---
-    const updateMusicIcons = (isPaused) => {
-        playIcon.style.display = isPaused ? 'block' : 'none';
-        pauseIcon.style.display = isPaused ? 'none' : 'block';
-    };
-    musicToggle.addEventListener('click', () => {
-        const isPaused = audio.paused;
-        isPaused ? audio.play() : audio.pause();
-        updateMusicIcons(!isPaused);
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    WeddingInvitation.init();
 });
 </script>
 
